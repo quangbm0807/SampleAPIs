@@ -1,6 +1,8 @@
 package com.quang.sampleapi.controller;
 
 import com.quang.sampleapi.dto.request.UserRequestDTO;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,7 +12,7 @@ import java.util.List;
 public class UserController {
 
     @PostMapping("/")
-    public String addUser(@RequestBody UserRequestDTO userDTO) {
+    public String addUser(@Valid @RequestBody UserRequestDTO userDTO) {
 
         return "success";
     }
@@ -22,7 +24,7 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}")
-    public String patchUser(@PathVariable("userId") int userID, @RequestParam boolean Status) {
+    public String patchUser(@Min(1) @PathVariable("userId") int userID, @Min(1) @RequestParam int Status) {
         System.out.println("Request update user status where = " + userID);
         return "success updated status of user ID = " + userID;
     }
