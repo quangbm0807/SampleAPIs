@@ -1,10 +1,14 @@
 package com.quang.sampleapi.controller;
 
 import com.quang.sampleapi.dto.request.UserRequestDTO;
+import com.quang.sampleapi.dto.response.ResponseData;
+import com.quang.sampleapi.dto.response.ResponseSuccess;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -12,42 +16,39 @@ import java.util.List;
 public class UserController {
 
     @PostMapping("/")
-    public String addUser(@Valid @RequestBody UserRequestDTO userDTO) {
-
-        return "success";
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseData<UserRequestDTO> addUser(@Valid @RequestBody UserRequestDTO userDTO) {
+        return new ResponseData<>(HttpStatus.CREATED.value(), "User added successfully", userDTO);
     }
 
     @PutMapping("/{userId}")
-    public String updateUser(@PathVariable("userId") int userID, @RequestBody UserRequestDTO userDTO) {
-        System.out.println("Request update user ID = " + userID);
-        return "success updated user ID = " + userID;
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public ResponseData updateUser(@PathVariable("userId") int userID, @RequestBody UserRequestDTO userDTO) {
+        return new ResponseData<>(HttpStatus.ACCEPTED.value(), "User updated successfully");
     }
 
     @PatchMapping("/{userId}")
-    public String patchUser(@Min(1) @PathVariable("userId") int userID, @Min(1) @RequestParam int Status) {
-        System.out.println("Request update user status where = " + userID);
-        return "success updated status of user ID = " + userID;
+    public ResponseData patchUser(@Min(1) @PathVariable("userId") int userID, @Min(1) @RequestParam int Status) {
+        return new ResponseData<>(HttpStatus.ACCEPTED.value(), "User updated successfully");
     }
 
     @DeleteMapping("/{userId}")
-    public String deleteUser(@PathVariable("userId") int userID) {
-        System.out.println("Request delete user ID = " + userID);
-        return "success deleted user ID = " + userID;
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ResponseData deleteUser(@PathVariable("userId") int userID) {
+        return new ResponseData<>(HttpStatus.NO_CONTENT.value(), "User deleted successfully");
     }
 
     @GetMapping("/{userId}")
-    public UserRequestDTO getUser(@PathVariable int userId) {
-        System.out.println("Get user ID = " + userId);
-        return new UserRequestDTO("Quang", "Bui", "0342868639", "buiminhquang2002@gmail.com");
+    public ResponseData<UserRequestDTO> getUser(@PathVariable int userId) {
+        return new ResponseData<>(HttpStatus.OK.value(), "User", new UserRequestDTO("Quang", "Bui", "0342868639", "buiminhquang2002@gmail.com"));
     }
 
     @GetMapping("/list")
-    public List<UserRequestDTO> getUsers(@RequestParam(required = false) String email,
-                                         @RequestParam(defaultValue = "0") int pageNo,
-                                         @RequestParam(defaultValue = "10") int pageSize) {
-        System.out.println("Get users");
-        return List.of(new UserRequestDTO("Quang", "Bui", "0342868639", "buiminhquang2002@gmail.com"),
-                new UserRequestDTO("Uyen", "Nguyen", "0917504072", "nhdu181003@gmail.com"));
-
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseData<List<UserRequestDTO>> getUsers(@RequestParam(required = false) String email,
+                                    @RequestParam(defaultValue = "0") int pageNo,
+                                    @RequestParam(defaultValue = "10") int pageSize) {
+        return new ResponseData<>(HttpStatus.OK.value(), "List Users", List.of(new UserRequestDTO("Quang", "Bui", "0342868639", "buiminhquang2002@gmail.com"),
+                new UserRequestDTO("Uyen", "Nguyen", "0917504072", "nhdu181003@gmail.com")));
     }
 }
